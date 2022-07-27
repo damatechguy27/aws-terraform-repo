@@ -32,7 +32,6 @@ resource "aws_instance" "awsec2" {
   subnet_id              = aws_subnet.sub0.id
   vpc_security_group_ids = [aws_security_group.remotesg.id, aws_security_group.web.id, aws_security_group.ansiblesg.id]
   key_name = aws_key_pair.publickey.key_name
-  #user_data = file("winrm_setup.ps1")
   user_data = data.template_file.userdata_win.rendered
   tags = { Name = var.ec2name }
 
