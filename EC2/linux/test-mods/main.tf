@@ -1,3 +1,6 @@
+#########################################
+# AWS, VPC, and Security Group Module
+#########################################
 module aws-vpc-mod {
 
     source = "./aws-mods/vpc"
@@ -54,7 +57,9 @@ variable "inst_types" {
   }
 
 }
-// Main body of script
+############################
+#   Main body of script
+############################
 resource "aws_ebs_volume" "ebsvol" {
   availability_zone = module.aws-vpc-mod.vpc-az
   size              = 20
