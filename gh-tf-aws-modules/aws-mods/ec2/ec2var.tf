@@ -38,22 +38,7 @@ variable "ec2-sg-id" {
     type = list(string)
   
 }
-/*
-variable "ec2-sg2-id" {
-    type = string
-  
-}
 
-variable "ec2-sg1-id" {
-    type = string
-  
-}
-
-variable "ec2-sg2-id" {
-    type = string
-  
-}
-*/
 // EC2 ebs sizes
 variable "ec2-ebs-size" {
     type = string
