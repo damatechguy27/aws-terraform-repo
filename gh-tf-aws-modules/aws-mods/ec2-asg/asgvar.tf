@@ -43,32 +43,11 @@ variable "asg-az2-id" {
 variable "asg-subnet-id" {
     type    = list(string)
 }
-/*
-variable "asg-subnet1-id" {
-    type = string
-  
-}
 
-variable "asg-subnet2-id" {
-    type = string
-  
-}
-*/
 //ASG security groups ID
 variable "asg-sg-id" {
     type    = list(string)
 }
-/*
-variable "asg-sg1-id" {
-    type = string
-  
-}
-
-variable "asg-sg2-id" {
-    type = string
-  
-}
-*/
 
 // ASG ebs sizes
 variable "asg-ebs-size" {
