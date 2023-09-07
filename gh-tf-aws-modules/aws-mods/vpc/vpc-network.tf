@@ -22,7 +22,13 @@ resource "aws_subnet" "sub0" {
   tags                    = { Name = var.subnet_name[0] }
 }
 
-
+resource "aws_subnet" "sub1" {
+  vpc_id                  = aws_vpc.vpc1.id
+  cidr_block              = var.PUBSUB_IP[1]
+  availability_zone       = var.avail_name[1]
+  map_public_ip_on_launch = true
+  tags                    = { Name = var.subnet_name[1] }
+}
 #setting up main route table
 resource "aws_default_route_table" "pubroute" {
   default_route_table_id = aws_vpc.vpc1.default_route_table_id
@@ -40,7 +46,12 @@ resource "aws_default_route_table" "pubroute" {
 }
 
 #route table association
-resource "aws_route_table_association" "rta-subnet" {
+resource "aws_route_table_association" "rta-subnet1" {
   subnet_id      = aws_subnet.sub0.id
+  route_table_id = aws_default_route_table.pubroute.id
+}
+
+resource "aws_route_table_association" "rta-subnet2" {
+  subnet_id      = aws_subnet.sub1.id
   route_table_id = aws_default_route_table.pubroute.id
 }

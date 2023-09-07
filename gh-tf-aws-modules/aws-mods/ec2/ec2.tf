@@ -20,7 +20,7 @@ resource "aws_instance" "awsec2" {
   instance_type          = var.ec2-instance-size
   ami                    = "ami-a0cfeed8"
   subnet_id              = var.ec2-subnet-id
-  vpc_security_group_ids = [var.ec2-sg1-id, var.ec2-sg2-id]
+  vpc_security_group_ids = var.ec2-sg-id
   key_name = aws_key_pair.publickey.key_name
 
 
