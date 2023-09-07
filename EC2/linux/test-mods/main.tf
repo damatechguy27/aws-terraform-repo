@@ -54,9 +54,9 @@ variable "inst_types" {
   }
 
 }
-
+// Main body of script
 resource "aws_ebs_volume" "ebsvol" {
-  availability_zone = module.aws-vpc-mod.vpc-az #module.aws-test-mod.vpc-sub0-az
+  availability_zone = module.aws-vpc-mod.vpc-az
   size              = 20
   type              = "gp2"
 
