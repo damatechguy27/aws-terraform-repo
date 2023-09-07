@@ -66,23 +66,27 @@ module aws-asg-mod {
     // By uncommenting the variable below:
     
     // The autoscaling group name 
-#    asg-name = 
+    // default name is ASG-TF
+#    asg-name = "Jeffery-asg"
 
-#    asg-prefix = 
+    // default prefix is ASG-TF-
+#    asg-prefix = "Jeffery-asg-"
 
     // Autoscaling rules 
-#    asg-desired-capacity = 
-
-#    asg-max-num = 
-
-#    asg-min-num = 
+    // default desired capacity is 2
+#    asg-desired-capacity = "3"
+    // default maximum size is 4
+#    asg-max-num = "6"
+    // default maximum size is 2
+#    asg-min-num = "3"
 
 
     // Autoscaling EBS sizes
-#    asg-ebs-size = 
-
-#    asg-ebs-type = 
-
+    // default size is 20
+#    asg-ebs-size = "30"
+    // default instance type is gp2
+#    asg-ebs-type = "gp3"
     
 }
+
 */
