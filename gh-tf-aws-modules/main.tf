@@ -13,14 +13,14 @@ module aws-sg-mod {
 module aws-ec2-mod {
 
     source = "./aws-mods/ec2"
-
+# Variables below are require to have a value specified
     ec2-az-id     = var.avail_name[0]
     ec2-subnet-id = module.aws-vpc-mod.vpc-sub0-id
     ec2-sg1-id    = module.aws-sg-mod.sg-web-id
     ec2-sg2-id    = module.aws-sg-mod.sg-remotesg-id
     
 
-    //variables below has default value but you can change them if you like
+    //variables below has default values but you can change them if you like
     // By uncommenting the variable below:
     // Default value is Ec2-TF
 #   ec2-name = "jeffrey"
