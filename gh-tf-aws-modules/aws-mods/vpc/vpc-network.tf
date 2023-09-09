@@ -4,13 +4,13 @@
 resource "aws_vpc" "vpc1" {
   cidr_block           = var.CIDR_IP
   enable_dns_hostnames = true
-  tags = { Name = var.vpc_name }
+  tags                 = { Name = var.vpc_name }
 }
 
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "intgw" {
   vpc_id = aws_vpc.vpc1.id
-  tags = { Name = var.interGW_name }
+  tags   = { Name = var.interGW_name }
 }
 
 # Create a subnet to launch our instances into
@@ -39,7 +39,7 @@ resource "aws_default_route_table" "pubroute" {
 
 
   }
- 
+
   tags = {
     Name = var.pubroute_name
   }

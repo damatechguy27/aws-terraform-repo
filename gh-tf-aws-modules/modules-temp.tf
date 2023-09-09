@@ -61,7 +61,7 @@ module aws-asg-mod {
     asg-az2-id     = var.avail_name[1]
     asg-subnet-id  = [ "${module.aws-vpc-mod.vpc-sub0-id}", "${module.aws-vpc-mod.vpc-sub1-id}"]
     asg-sg-id      = [ "${module.aws-sg-mod.sg-web-id}", "${module.aws-sg-mod.sg-remotesg-id}"]    
-
+    asg-tg-arn-id  = ["${module.aws-elb-mod.tg-anr}"]
     //variables below has default value but you can change them if you like
     // By uncommenting the variable below:
     
@@ -86,7 +86,7 @@ module aws-asg-mod {
 #    asg-ebs-size = "30"
     // default instance type is gp2
 #    asg-ebs-type = "gp3"
-    
-}
 
+
+}
 */

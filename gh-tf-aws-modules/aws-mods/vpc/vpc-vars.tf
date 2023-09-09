@@ -2,12 +2,12 @@
 # NETWORKING VARIABLES
 #########################################
 variable "vpc_name" {
-  type = string
+  type    = string
   default = "tfvpc"
 }
 
 variable "interGW_name" {
-  type = string
+  type    = string
   default = "tfintgw"
 }
 
@@ -18,19 +18,19 @@ variable "subnet_name" {
 }
 
 variable "pubroute_name" {
-  type = string
+  type    = string
   default = "tfpubrt"
 }
 
 variable "priroute_name" {
-  type = string
+  type    = string
   default = "tfprivrt"
 }
 
 
 
 variable "CIDR_IP" {
-  type = string
+  type    = string
   default = "11.0.0.0/16"
 
 }

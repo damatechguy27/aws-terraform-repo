@@ -7,9 +7,9 @@ variable "aws_reg" {
 variable "inst_types" {
   type = map(string)
   default = {
-    micro   = "t3.micro"
-    small   = "t3.small"
-    medium  = "t3.medium"
+    micro  = "t3.micro"
+    small  = "t3.small"
+    medium = "t3.medium"
   }
 
 }

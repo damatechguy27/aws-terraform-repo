@@ -3,7 +3,7 @@ resource "aws_security_group" "web" {
   name        = var.SG_name[0]
   description = "Used in the terraform"
   vpc_id      = var.sg-vpc-id
-  tags = { Name = var.SG_name[0] }
+  tags        = { Name = var.SG_name[0] }
 
   # HTTP access from anywhere
   ingress {
@@ -28,7 +28,7 @@ resource "aws_security_group" "remotesg" {
   name        = var.SG_name[1]
   description = "Used in the terraform"
   vpc_id      = var.sg-vpc-id
-  tags = { Name = var.SG_name[1] }
+  tags        = { Name = var.SG_name[1] }
 
   # SSH access from anywhere
   ingress {
@@ -37,7 +37,7 @@ resource "aws_security_group" "remotesg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   # outbound internet access
   egress {
     from_port   = 0
