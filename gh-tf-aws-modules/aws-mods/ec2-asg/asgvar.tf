@@ -115,10 +115,6 @@ variable "aws-ec2-image" {
     default = "ami-0b2b4f610e654d9ac"
 }
 
-variable "asg-tg-arn-id" {
-    type    = string
-}
-
 variable "asg-healthcheck-type" {
     type    = list(string)
     default = ["EC2", "ELB"]

@@ -75,17 +75,6 @@ variable "tg-target-type" {
   type    = string
   default = "alb"
 }
-/*
-# Target Group ARN ID
-variable "tg-arn-id" {
-  type = string
-}
-*/
-
-# Target Group Instance IDs
-variable "tg-instance-id" {
-  type = string
-}
 
 # LISTENER Protocol
 variable "elb-list-protocol" {
@@ -98,3 +87,4 @@ variable "elb-list-ports" {
   type    = string
   default = "80"
 }
+

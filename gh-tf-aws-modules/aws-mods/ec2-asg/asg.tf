@@ -5,16 +5,8 @@ resource "aws_autoscaling_group" "tf_asg" {
   max_size            = var.asg-max-num
   min_size            = var.asg-min-num
   vpc_zone_identifier = var.asg-subnet-id
-  /*[
-    module.vpc.private_subnet[0],
-    module.vpc.private_subnet[1]
-  ]*/
 
-# AUTOSCALING AND LOAD BALANCERS SETUP   
-  // Use the ANR for the target group of your ELB
-  // comment this section out when not conneting to a ALB or NLB
-  target_group_arns = var.asg-tg-arn-id
-  
+
   // Use selection "EC2" for EC2 healthchecks 
   // Use ELB for ELB healthchecks use this if you want to use the ELB for check your ALB
   health_check_type = var.asg-healthcheck-type[1]
