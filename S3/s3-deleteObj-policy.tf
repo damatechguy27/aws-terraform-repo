@@ -1,10 +1,10 @@
-resource "aws_s3_bucket" "example_bucket" {
+resource "aws_s3_bucket" "s3_bucket" {
   bucket = "awsdams3testbucket"
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "example_lifecycle_policy" {
+resource "aws_s3_bucket_lifecycle_configuration" "s3_lifecycle_policy" {
 #enter the id of the s3 bucket
-  bucket = aws_s3_bucket.example_bucket.id
+  bucket = aws_s3_bucket.s3_bucket.id
 
   rule {
     id     = "delete-all-after-30-days"
