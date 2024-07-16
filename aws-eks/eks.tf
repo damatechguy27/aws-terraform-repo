@@ -200,15 +200,14 @@ provider "kubernetes" {
     args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name]
     command     = "aws"
   }
-  time_offset = "4h"  # Adjust this value as needed
 }
 
-# WordPress Deployment
-resource "kubernetes_deployment" "wordpress" {
+# Apache Deployment
+resource "kubernetes_deployment" "apache" {
   depends_on = [time_sleep.wait_for_kubernetes]
 
   metadata {
-    name = "wordpress"
+    name = "apache"
   }
 
   spec {
@@ -216,24 +215,33 @@ resource "kubernetes_deployment" "wordpress" {
 
     selector {
       match_labels = {
-        app = "wordpress"
+        app = "apache"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "wordpress"
+          app = "apache"
         }
       }
 
       spec {
         container {
-          image = "wordpress:latest"
-          name  = "wordpress"
+          image = "httpd:2.4"
+          name  = "apache"
 
           port {
             container_port = 80
+          }
+
+          # Create a simple index.html file with "Hello World"
+          lifecycle {
+            post_start {
+              exec {
+                command = ["/bin/sh", "-c", "echo '<html><body><h1>Hello World</h1></body></html>' > /usr/local/apache2/htdocs/index.html"]
+              }
+            }
           }
         }
       }
@@ -241,17 +249,17 @@ resource "kubernetes_deployment" "wordpress" {
   }
 }
 
-# WordPress Service (Load Balancer)
-resource "kubernetes_service" "wordpress" {
+# Apache Service (Load Balancer)
+resource "kubernetes_service" "apache" {
   depends_on = [time_sleep.wait_for_kubernetes]
 
   metadata {
-    name = "wordpress"
+    name = "apache"
   }
 
   spec {
     selector = {
-      app = "wordpress"
+      app = "apache"
     }
 
     port {
@@ -265,5 +273,5 @@ resource "kubernetes_service" "wordpress" {
 
 # Output the Load Balancer URL
 output "load_balancer_url" {
-  value = kubernetes_service.wordpress.status.0.load_balancer.0.ingress.0.hostname
+  value = kubernetes_service.apache.status.0.load_balancer.0.ingress.0.hostname
 }
