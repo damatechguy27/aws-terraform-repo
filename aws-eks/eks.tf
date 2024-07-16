@@ -185,6 +185,12 @@ resource "aws_eks_node_group" "eks_node_group" {
   ]
 }
 
+# Time sleep to allow EKS to fully provision
+resource "time_sleep" "wait_for_kubernetes" {
+  depends_on = [aws_eks_node_group.eks_node_group]
+  create_duration = "60s"
+}
+
 # Kubernetes provider
 provider "kubernetes" {
   host                   = aws_eks_cluster.eks_cluster.endpoint
@@ -194,10 +200,13 @@ provider "kubernetes" {
     args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name]
     command     = "aws"
   }
+  time_offset = "4h"  # Adjust this value as needed
 }
 
 # WordPress Deployment
 resource "kubernetes_deployment" "wordpress" {
+  depends_on = [time_sleep.wait_for_kubernetes]
+
   metadata {
     name = "wordpress"
   }
@@ -234,6 +243,8 @@ resource "kubernetes_deployment" "wordpress" {
 
 # WordPress Service (Load Balancer)
 resource "kubernetes_service" "wordpress" {
+  depends_on = [time_sleep.wait_for_kubernetes]
+
   metadata {
     name = "wordpress"
   }
