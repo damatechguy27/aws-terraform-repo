@@ -3,6 +3,7 @@
 // to upgrade the terraform file after upgrade perform a terraform plan -refresh-only 
 // or terraform apply -refresh-only 
 // This allows you to safely update your state file without making changes to your infrastructure
+
 data "aws_availability_zones" "available" {}
 
 # VPC
