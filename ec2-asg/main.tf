@@ -86,6 +86,16 @@ resource "aws_autoscaling_group" "ec2-asg" {
     value               = "Web-Team"
     propagate_at_launch = true
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  instance_maintenance_policy {
+    min_healthy_percentage = 100
+    max_healthy_percentage = 110
+  }
+
 }
 
 #Scaling policies 

@@ -18,7 +18,7 @@ provider "aws" {
     # linux 
     #shared_credentials_files = "~/.aws/credentials"
     #window
-    shared_credentials_files = ["C:\\Users\\user1\\.aws\\credentials"]
+    shared_credentials_files = ["C:\\Users\\dmit27\\.aws\\credentials"]
 
     profile = "default"
 }
