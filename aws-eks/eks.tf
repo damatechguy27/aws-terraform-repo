@@ -123,11 +123,55 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   role       = aws_iam_role.eks_cluster_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks_WorkerNode_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.eks_cluster_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks_VPCResourceController" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = aws_iam_role.eks_cluster_role.name
+}
+
+# Creating EKS IAM Policy 
+resource "aws_iam_policy" "eks_describe_policy" {
+  name        = "eks-describe-policy"
+  path        = "/"
+  description = "Policy to allow describing and listing EKS clusters"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:*",
+          "ec2:DescribeInstances",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_describe_policy_attachment" {
+  role       = aws_iam_role.eks_cluster_role.name
+  policy_arn = aws_iam_policy.eks_describe_policy.arn
+}
+
+
+
 # EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "my-eks-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
-  version  = "1.23"
+  version  = "1.30" #change back to 1.23
 
   vpc_config {
     subnet_ids = [aws_subnet.eks_subnet_1.id, aws_subnet.eks_subnet_2.id]
