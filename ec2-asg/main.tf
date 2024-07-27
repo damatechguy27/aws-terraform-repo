@@ -16,6 +16,7 @@ resource "aws_launch_template" "asg-template" {
                 sudo git clone https://github.com/damatechguy27/gameapps.git
                 sudo cp -rf gameapps/Glokar/* /var/www/html
                 sudo chown -R apache:apache /var/www/html/*
+                sudo chmod 740 /var/www/html/*
                 sudo systemctl start httpd
                 sudo systemctl enable httpd
                 sudo rm-rf /home/games
