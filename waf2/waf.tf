@@ -1,4 +1,5 @@
 # Final Version of WAF ACL script
+
 # Create the "allowips" IP set
 resource "aws_wafv2_ip_set" "allowips" {
   name               = "allowedips"
