@@ -1,96 +1,117 @@
-resource "aws_wafv2_web_acl" "wafv2" {
-  name        = "400-series-error-protection"
-  description = "Block IPs with high rates of 400 series errors"
-  scope       = "REGIONAL"
+# Create the "allowips" IP set
+resource "aws_wafv2_ip_set" "allowips" {
+  name               = "allowedips"
+  description        = "IP set for allowed IPs"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = ["192.0.2.0/24", "198.51.100.0/24"]  # Replace with your allowed IP ranges
+}
+
+# Create the "allowvendor" IP set
+resource "aws_wafv2_ip_set" "allowvendor" {
+  name               = "allowedvendor"
+  description        = "IP set for allowed vendor IPs"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = ["203.0.113.0/24"]  # Replace with your allowed vendor IP ranges
+}
+
+# Create the Web ACL
+resource "aws_wafv2_web_acl" "acltest" {
+  name        = "RateLimiterBlanket"
+  description = "Example WAF Web ACL with rate-based rules"
+  scope       = "REGIONAL"  # Use "CLOUDFRONT" for CloudFront distributions
 
   default_action {
     allow {}
   }
 
-  # Rule to count 400 series errors
+  # Rule 1: Block IPs in allowlists if they exceed 2000 requests in 5 minutes
   rule {
-    name     = "count-400-series-errors"
+    name     = "RateLimit-allowed-IPs"
     priority = 1
 
     action {
-      count {}
+      block {}
     }
 
     statement {
-      regex_pattern_set_reference_statement {
-        arn = aws_wafv2_regex_pattern_set.four_hundred_series.arn
-        field_to_match {
-          single_header {
-            name = "status"
+      rate_based_statement {
+        limit              = 2000
+        aggregate_key_type = "IP"
+        evaluation_window_sec = 300
+
+        scope_down_statement {
+          or_statement {
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.allowips.arn
+              }
+            }
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.allowvendor.arn
+              }
+            }
           }
-        }
-        text_transformation {
-          priority = 0
-          type     = "NONE"
         }
       }
     }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "Count400SeriesErrors"
+      metric_name                = "RateLimit-allowed-IPs"
       sampled_requests_enabled   = true
     }
   }
 
-  # Rate-based rule to block IPs with high rates of 400 series errors
+  # Rule 2: Block IPs not in allowlists if they exceed 500 requests in 1 minute
   rule {
-  name     = "block-high-400-series-rate"
-  priority = 2
+    name     = "RateLimit-nonallowed-IPs"
+    priority = 2
 
-  action {
-    block {}
-  }
+    action {
+      block {}
+    }
 
-  statement {
-    rate_based_statement {
-      limit              = 100
-      aggregate_key_type = "IP"
-      scope_down_statement {
-        byte_match_statement {
-          field_to_match {
-            single_header {
-              name = "status"
+    statement {
+      rate_based_statement {
+        limit              = 500
+        aggregate_key_type = "IP"
+        evaluation_window_sec = 60
+
+        scope_down_statement {
+          or_statement {
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.allowips.arn
+                  }
+                }
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.allowvendor.arn
+                  }
+                }
+              }
             }
-          }
-          positional_constraint = "EXACTLY"
-          search_string         = "4[0-9][0-9]"
-          text_transformation {
-            priority = 0
-            type     = "NONE"
           }
         }
       }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "RateLimit-nonallowed-IPs"
+      sampled_requests_enabled   = true
     }
   }
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "BlockHigh400Rate"
+    metric_name                = "RateLimiterBlanket"
     sampled_requests_enabled   = true
   }
 }
 
-
-  visibility_config {
-    cloudwatch_metrics_enabled = true
-    metric_name                = "400SeriesErrorProtection"
-    sampled_requests_enabled   = true
-  }
-}
-
-# Regex pattern set for matching status codes starting with '4'
-resource "aws_wafv2_regex_pattern_set" "four_hundred_series" {
-  name        = "FourHundredSeriesStatusCodes"
-  scope       = "REGIONAL"
-  description = "Pattern set for 400 series HTTP status codes"
-
-  regular_expression {
-    regex_string = "^4\\d{2}$"
-  }
-}
