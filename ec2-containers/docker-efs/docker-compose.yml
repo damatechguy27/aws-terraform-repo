@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+
+  loadbalancer:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./lb-config/loadbalancer.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web1
+      - web2
+
+    command: sh -c "nginx -g 'daemon off;'"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  web1:
+    image: httpd:2.4-alpine
+    volumes:
+      - ./web1:/usr/local/apache2/htdocs/
+
+    command: >
+      sh -c "
+        echo '<h1>Web Server 1</h1>' > /usr/local/apache2/htdocs/index.html &&
+        httpd-foreground
+      "
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  web2:
+    image: httpd:2.4-alpine
+    volumes:
+      - ./web2:/usr/local/apache2/htdocs/
+
+    command: >
+      sh -c "
+        echo '<h1>Web Server 2</h1>' > /usr/local/apache2/htdocs/index.html &&
+        httpd-foreground
+      "
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+

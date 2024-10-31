@@ -1,0 +1,11 @@
+drupalgap.js
+cordova*js
+modules/*
+settings.js
+node_modules
+jDrupal
+jdrupal.js
+jdrupal.min.js
+.drupalgap-backups
+.idea
+

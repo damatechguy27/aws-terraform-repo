@@ -1,0 +1,1 @@
+dg.modules.image = new dg.Module();

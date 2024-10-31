@@ -74,7 +74,7 @@ resource "aws_subnet" "priv-Subnets" {
   
 }
 
-#creates the public route table 
+#creates the private route table 
 resource "aws_route_table" "privateroute" {
     vpc_id = aws_vpc.vpc.id
 

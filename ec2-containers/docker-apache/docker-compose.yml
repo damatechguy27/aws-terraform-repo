@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+
+  loadbalancer:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./lb-config/loadbalancer.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web1
+      - web2
+
+    command: sh -c "nginx -g 'daemon off;'"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  web1:
+    image: httpd:2.4-alpine
+    volumes:
+      - type: volume
+        source: efs_volume
+        target: /usr/local/apache2/htdocs
+        volume:
+          nocopy: true
+    command: httpd-foreground
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  web2:
+    image: httpd:2.4-alpine
+    volumes:
+      - type: volume
+        source: efs_volume
+        target: /usr/local/apache2/htdocs
+        volume:
+          nocopy: true
+    command: httpd-foreground
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  efs_volume:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=<YOUR_EFS_DNS_NAME>,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2
+      device: ":/"

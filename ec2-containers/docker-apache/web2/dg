@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# @TODO this file is getting huge, break it up into smaller scripts.
+
+# Globals
+APP_MODULES_DIRECTORY="modules"
+APP_MODULES_CONTRIB_DIRECTORY="$APP_MODULES_DIRECTORY/contrib"
+APP_MODULES_CUSTOM_DIRECTORY="$APP_MODULES_DIRECTORY/custom"
+APP_THEMES_DIRECTORY="themes"
+APP_BACKUPS_DIRECTORY="$HOME/drupalgap-backups"
+DRUPALGAP_JS_URL="https://raw.githubusercontent.com/signalpoint/DrupalGap/8.x-1.x/drupalgap.js"
+DRUPALGAP_MIN_JS_URL="https://raw.githubusercontent.com/signalpoint/DrupalGap/8.x-1.x/drupalgap.min.js"
+JDRUPAL_MIN_JS_URL="https://raw.githubusercontent.com/signalpoint/jDrupal/8.x-1.x/jdrupal.min.js"
+
+# Export the globals so they can be shared in other scripts.
+export APP_MODULES_DIRECTORY
+export APP_MODULES_CONTRIB_DIRECTORY
+export APP_MODULES_CUSTOM_DIRECTORY
+export APP_THEMES_DIRECTORY
+export APP_BACKUPS_DIRECTORY
+export DRUPALGAP_JS_URL
+export DRUPALGAP_MIN_JS_URL
+export JDRUPAL_MIN_JS_URL
+
+# ...
+
+# Check for an input argument command, let them know it is ready if they
+# didn't supply one.
+if [ -z "$1" ]
+  then
+    echo "The DrupalGap CLI is ready!"
+    exit 1
+fi
+
+# Determine the command and call its handler.
+case "$1" in
+create)
+  case "$2" in
+    module)
+      (. ./scripts/dg/_init.sh $@ && ./scripts/dg/create-module.sh $@)
+      ;;
+    theme)
+      (. ./scripts/dg/_init.sh $@ && ./scripts/dg/create-theme.sh $@)
+      ;;
+  esac
+  ;;
+disable|dis)
+  (. ./scripts/dg/_init.sh $@ && ./scripts/dg/disable.sh $@)
+  ;;
+download|dl) ./scripts/dg/download.sh $@ ;;
+enable|en)
+  (. ./scripts/dg/_init.sh $@ && ./scripts/dg/enable.sh $@)
+  ;;
+install)
+  (. ./scripts/dg/_init.sh $@ && ./scripts/dg/install.sh $@)
+  ;;
+update|up) ./scripts/dg/update.sh $@ ;;
+-*) usage "Unknown command: $1";;
+esac
